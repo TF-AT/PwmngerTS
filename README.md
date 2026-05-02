@@ -1,5 +1,7 @@
 # PwmngerTS 🔐
 
+> 🚀 **A product of The Factory**
+
 > ⚠️ **IMPORTANT:** This project is experimental and has not undergone a formal security audit. Do not use it to store highly sensitive passwords yet.
 
 **An open-source, zero-knowledge, cross-platform password manager built with TypeScript and Next.js**

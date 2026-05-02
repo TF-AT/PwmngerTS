@@ -90,7 +90,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLogin, onRegister })
           <a href="#">Terms of Service</a>
           <a href="mailto:support@pwmnger.ts">Support</a>
         </div>
-        <div className="footer-copy">© 2026 PwmngerTS. Secure Zero-Knowledge Storage Global.</div>
+        <div className="footer-copy">
+          © 2026 PwmngerTS. Secure Zero-Knowledge Storage Global.
+          <br />
+          <span style={{ display: 'block', marginTop: '8px', color: 'var(--accent-green)', fontWeight: 600, letterSpacing: '0.5px' }}>A PRODUCT OF THE FACTORY</span>
+        </div>
       </footer>
 
       <style>{`
