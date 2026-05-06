@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { Button, Input } from "@pwmnger/ui";
-import { Mail, Lock, ShieldCheck, ArrowRight, Key } from "lucide-react";
+import { Mail, Lock, ShieldCheck, ArrowRight, Key, Eye, EyeOff } from "lucide-react";
 
 interface LoginFormProps {
   onLogin: (
@@ -23,6 +23,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const [password, setPassword] = React.useState("");
   const [twoFactorToken, setTwoFactorToken] = React.useState("");
   const [show2FA, setShow2FA] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const handleSubmit = async () => {
     try {
@@ -60,33 +61,60 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               }}
             />
           </div>
+
           <div style={{ position: "relative" }}>
-            <Lock size={16} style={{ position: "absolute", left: 14, top: 40, color: "var(--text-dim)" }} />
+            <Lock
+              size={16}
+              style={{
+                position: "absolute",
+                left: 14,
+                top: 40,
+                color: "var(--text-dim)",
+              }}
+            />
+
             <Input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Master password"
               label="Master Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSubmit()}
-              style={{ 
-                background: "var(--slate-900)", 
-                border: "1px solid var(--border-subtle)", 
-                color: "#fff", 
+              style={{
+                background: "var(--slate-900)",
+                border: "1px solid var(--border-subtle)",
+                color: "#fff",
                 paddingLeft: "40px",
-                height: "44px"
+                paddingRight: "40px",
+                height: "44px",
               }}
             />
+
+            <div
+              onClick={() => setShowPassword((prev) => !prev)}
+              style={{
+                position: "absolute",
+                right: 14,
+                top: 40,
+                cursor: "pointer",
+                color: "var(--text-dim)",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </div>
           </div>
         </div>
       ) : (
         <div style={{ textAlign: "center", marginBottom: 24 }} className="animate-fade-in">
-           <div style={{ width: 48, height: 48, borderRadius: "50%", background: "var(--accent-green-glow)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", border: "1px solid var(--accent-green)" }}>
-              <ShieldCheck size={24} style={{ color: "var(--accent-green)" }} />
-           </div>
-           <p style={{ fontSize: "14px", fontWeight: 600, margin: "0 0 4px" }}>Identity Verification</p>
-           <p style={{ fontSize: "12px", color: "var(--text-dim)", marginBottom: 24 }}>Enter your 2FA code or use your security key.</p>
-           <Input
+          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "var(--accent-green-glow)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", border: "1px solid var(--accent-green)" }}>
+            <ShieldCheck size={24} style={{ color: "var(--accent-green)" }} />
+          </div>
+          <p style={{ fontSize: "14px", fontWeight: 600, margin: "0 0 4px" }}>Identity Verification</p>
+          <p style={{ fontSize: "12px", color: "var(--text-dim)", marginBottom: 24 }}>Enter your 2FA code or use your security key.</p>
+
+          <Input
             placeholder="000 000"
             label="2FA Code"
             value={twoFactorToken}
@@ -103,6 +131,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               letterSpacing: "0.2em"
             }}
           />
+
           <div style={{ marginTop: 20 }}>
             <Button
               variant="secondary"
@@ -112,10 +141,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   const options = await getWebAuthnLoginOptions(email);
                   const assertion = await startAuthentication(options);
                   await verifyWebAuthnLogin(assertion);
-                  // If successful, the server should ideally set a verification session or similar
-                  // For this flow, we'll just try to login with a special token or similar
-                  // FIXED: In our updated backend, WebAuthn verification will set a session that allows the next login attempt or provides the JWT directly.
-                  // For now, we'll suggest a re-login which will now bypass 2FA if verified.
                   handleSubmit(); 
                 } catch (err: any) {
                   console.error(err);
