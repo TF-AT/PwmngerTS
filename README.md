@@ -22,6 +22,7 @@ PwmngerTS is a client-side encrypted password manager designed to handle secrets
 - 🔑 **Master Password Rotation:** Securely change your password with automatic **KDF Salt Rotation**.
 - ☁️ **Seamless Sync:** Robust encrypted blob synchronization with conflict resolution.
 - 📂 **Organization:** Manage entries with folders and a powerful search interface.
+- 👁️ **Enhanced UX:** Password visibility toggles and a smart generator with ambiguous character filtering.
 
 ---
 
