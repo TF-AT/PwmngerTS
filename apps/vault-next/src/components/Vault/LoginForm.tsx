@@ -92,14 +92,21 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
             <div
               onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              role="button"
               style={{
                 position: "absolute",
                 right: 14,
-                top: 40,
+                top: "50%",
+                transform: "translateY(-50%)",
+                marginTop: "12px", // Offset for the label height
                 cursor: "pointer",
                 color: "var(--text-dim)",
                 display: "flex",
                 alignItems: "center",
+                background: "none",
+                border: "none",
+                padding: 4,
               }}
             >
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
