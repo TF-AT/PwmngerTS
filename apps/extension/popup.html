@@ -13,7 +13,10 @@
       </div>
       
       <input type="email" id="loginEmail" placeholder="Email Address" />
-      <input type="password" id="loginPassword" placeholder="Master Password" />
+      <div style="position: relative;">
+        <input type="password" id="loginPassword" placeholder="Master Password" style="padding-right: 40px;" />
+        <span id="toggleLoginPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; opacity: 0.6; font-size: 14px;">👁️</span>
+      </div>
       
       <div id="login2FASection" hidden style="background: rgba(62, 207, 142, 0.1); padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px; border: 1px solid var(--accent-green-glow);">
         <p style="font-size: 11px; margin: 0 0 8px 0; color: var(--accent-green); font-weight: 600;">2FA Required</p>
@@ -54,7 +57,10 @@
         <p>Enter your master password.</p>
       </div>
       
-      <input type="password" id="masterPassword" placeholder="Master password" autofocus />
+      <div style="position: relative;">
+        <input type="password" id="masterPassword" placeholder="Master password" autofocus style="padding-right: 40px;" />
+        <span id="toggleUnlockPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; opacity: 0.6; font-size: 14px;">👁️</span>
+      </div>
       <button id="unlockBtn">Unlock Vault</button>
       
       <p style="font-size: 12px; margin-top: 16px; text-align: center;">
@@ -109,6 +115,10 @@
            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <p style="margin: 0; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-dim);">Generator</p>
             <input type="number" id="length" value="16" min="8" max="64" style="width: 50px; margin: 0; padding: 4px; text-align: center;" />
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <input type="checkbox" id="excludeAmbiguous" style="width: auto; margin: 0;" />
+            <label for="excludeAmbiguous" style="font-size: 11px; color: var(--text-muted); cursor: pointer;">Exclude ambiguous (0, O, l, 1)</label>
           </div>
           <div style="display: flex; gap: 8px;">
             <input type="text" id="generatedPassword" readonly style="margin: 0; font-family: monospace;" />

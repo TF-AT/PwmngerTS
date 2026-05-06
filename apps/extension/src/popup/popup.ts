@@ -22,6 +22,7 @@ import {
 } from "@pwmnger/app-logic";
 import { passwordStrength } from "../password/strength";
 import { checkPasswordBreach } from "../password/breach";
+import { generatePassword } from "../password/generator";
 
 // Initialize API URL for app-logic package
 (globalThis as any).PW_API_URL = "http://localhost:4000";
@@ -355,29 +356,48 @@ if (typeof document !== "undefined") {
       }, 300);
     });
 
-    // Generator logic
     const generateBtn = document.getElementById("generate");
-    const lengthInput = document.getElementById(
-      "length",
-    ) as HTMLInputElement | null;
-    const generatedOutput = document.getElementById(
-      "generatedPassword",
-    ) as HTMLInputElement | null;
+    const lengthInput = document.getElementById("length") as HTMLInputElement | null;
+    const generatedOutput = document.getElementById("generatedPassword") as HTMLInputElement | null;
 
     if (generateBtn && lengthInput && generatedOutput) {
+      const excludeAmbiguousCheck = document.getElementById("excludeAmbiguous") as HTMLInputElement | null;
       generateBtn.addEventListener("click", () => {
         const length = parseInt(lengthInput.value, 10) || 16;
-        const charset =
-          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-        const randomValues = crypto.getRandomValues(new Uint32Array(length));
-        let password = "";
-        for (let i = 0; i < length; i++) {
-          password += charset[randomValues[i]! % charset.length];
+        const excludeAmbiguous = excludeAmbiguousCheck?.checked || false;
+        
+        try {
+          const password = generatePassword({
+            length,
+            lowercase: true,
+            uppercase: true,
+            numbers: true,
+            symbols: true,
+            excludeAmbiguous
+          });
+          generatedOutput.value = password;
+          navigator.clipboard.writeText(password);
+        } catch (e: any) {
+          alert("Failed to generate password: " + e.message);
         }
-        generatedOutput.value = password;
-        navigator.clipboard.writeText(password);
       });
     }
+
+    // Toggle password visibility logic
+    const setupToggle = (toggleId: string, inputId: string) => {
+      const toggle = document.getElementById(toggleId);
+      const input = document.getElementById(inputId) as HTMLInputElement | null;
+      if (toggle && input) {
+        toggle.onclick = () => {
+          const isPassword = input.type === "password";
+          input.type = isPassword ? "text" : "password";
+          toggle.innerText = isPassword ? "🙈" : "👁️";
+        };
+      }
+    };
+
+    setupToggle("toggleLoginPassword", "loginPassword");
+    setupToggle("toggleUnlockPassword", "masterPassword");
 
     // Initial Vault Check
     try {
