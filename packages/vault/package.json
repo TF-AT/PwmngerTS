@@ -7,6 +7,9 @@
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@pwmnger/crypto": "workspace:*"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
