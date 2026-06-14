@@ -51,9 +51,16 @@ export async function getWebAuthnLoginOptions(email: string) {
 }
 
 export async function verifyWebAuthnLogin(response: any) {
+  const isExtension = typeof globalThis !== "undefined" &&
+    (globalThis.location?.protocol === "chrome-extension:" || globalThis.location?.protocol === "moz-extension:");
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (isExtension) {
+    headers["X-Client-Type"] = "extension";
+  }
+
   const res = await fetch(`${BASE_URL}/auth/2fa/webauthn/login/verify`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(response),
   });
   if (!res.ok) throw new Error("WebAuthn Login Verification failed");

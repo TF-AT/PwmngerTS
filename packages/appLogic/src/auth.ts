@@ -31,8 +31,15 @@ async function authenticatedFetch(url: string, options: RequestInit = {}, isRetr
   const headers = new Headers(options.headers || {});
 
   headers.set("Content-Type", "application/json");
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
+  
+  const isExtension = typeof globalThis !== "undefined" &&
+    (globalThis.location?.protocol === "chrome-extension:" || globalThis.location?.protocol === "moz-extension:");
+
+  if (isExtension) {
+    headers.set("X-Client-Type", "extension");
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
   }
 
   if (options.body !== undefined && options.body !== null) {
@@ -58,7 +65,9 @@ async function authenticatedFetch(url: string, options: RequestInit = {}, isRetr
 
       token = await loadAuthToken();
       if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
+        if (isExtension) {
+          headers.set("Authorization", `Bearer ${token}`);
+        }
         res = await fetch(url, {
           ...options,
           headers,
@@ -90,9 +99,16 @@ export async function registerAccount(
     };
     guardJsonBody(body, "registerAccount");
 
+    const isExtension = typeof globalThis !== "undefined" &&
+      (globalThis.location?.protocol === "chrome-extension:" || globalThis.location?.protocol === "moz-extension:");
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (isExtension) {
+      headers["X-Client-Type"] = "extension";
+    }
+
     const res = await fetch(`${getBaseUrl()}/auth/register`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(body),
       credentials: "include",
     });
@@ -136,9 +152,16 @@ export async function loginAccount(
     const body = { email, authHash, twoFactorToken };
     guardJsonBody(body, "loginAccount");
 
+    const isExtension = typeof globalThis !== "undefined" &&
+      (globalThis.location?.protocol === "chrome-extension:" || globalThis.location?.protocol === "moz-extension:");
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (isExtension) {
+      headers["X-Client-Type"] = "extension";
+    }
+
     const res = await fetch(`${getBaseUrl()}/auth/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(body),
       credentials: "include",
     });
