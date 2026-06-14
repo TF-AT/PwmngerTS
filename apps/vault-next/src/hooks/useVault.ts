@@ -9,13 +9,14 @@ import {
   addVaultEntry,
   deleteVaultEntry,
   updateVaultEntry,
-  importVaultData,
   createFolder,
   deleteFolder,
   moveEntryToFolder,
   unlockVaultWithRecoveryKey,
   exportRecoveryData,
   resetLocalVault,
+  exportEncryptedVault,
+  importEncryptedVault,
 } from "@pwmnger/app-logic";
 import type { Vault } from "@pwmnger/vault";
 
@@ -112,8 +113,14 @@ export function useVault() {
   };
 
   const importData = async (json: string) => {
-    await importVaultData(json);
+    const payload = JSON.parse(json);
+    await importEncryptedVault(payload);
     updateVaultState();
+  };
+
+  const exportBackup = async () => {
+    const payload = await exportEncryptedVault();
+    return JSON.stringify(payload, null, 2);
   };
 
   const createFolderAction = async (name: string) => {
@@ -156,6 +163,7 @@ export function useVault() {
     deleteEntry,
     updateEntry,
     importData,
+    exportBackup,
     createFolder: createFolderAction,
     deleteFolder: deleteFolderAction,
     moveEntry,

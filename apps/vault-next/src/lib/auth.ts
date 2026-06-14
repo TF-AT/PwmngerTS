@@ -1,10 +1,12 @@
 import { cookies } from "next/headers";
 import * as jwt from "jsonwebtoken";
+import { JWT_SECRET } from "@/lib/env";
 
 export async function getSession(req?: Request) {
   const cookieStore = await cookies();
   let token = cookieStore.get("accessToken")?.value;
-  
+
+  // Fallback to Authorization header (for browser extension Bearer token usage)
   if (!token && req) {
     const authHeader = req.headers.get("Authorization");
     if (authHeader?.startsWith("Bearer ")) {
@@ -17,10 +19,13 @@ export async function getSession(req?: Request) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+    const decoded = jwt.verify(token, JWT_SECRET, {
+      issuer: "pwmngerts",
+      audience: "pwmngerts-api",
+    }) as { userId: string };
     return { userId: decoded.userId };
   } catch (err) {
-    console.log("Auth verification failed:", err);
+    // Token is invalid, expired, or has wrong iss/aud — treat as unauthenticated
     return null;
   }
 }
@@ -29,4 +34,3 @@ export async function getAuthUser(req: Request) {
   const session = await getSession(req);
   return session ? session.userId : null;
 }
-
