@@ -27,7 +27,8 @@ interface VaultDashboardProps {
   onDeleteFolder: (id: string) => void;
   onMoveEntry: (entryId: string, folderId: string | null) => void;
   onEditEntry: (entryId: string, site: string, username: string, password: string) => void;
-  onImportVault: (jsonString: string) => void;
+  onImportVault: (jsonString: string) => Promise<void>;
+  onExportVault: () => Promise<string>;
   onDownloadRecoveryKit: () => void;
   onRefreshAccountStatus: () => void;
   isSyncing: boolean;
@@ -46,6 +47,7 @@ export const VaultDashboard = memo(({
   onMoveEntry,
   onEditEntry,
   onImportVault,
+  onExportVault,
   onDownloadRecoveryKit,
   onRefreshAccountStatus,
   isSyncing,
@@ -152,6 +154,23 @@ export const VaultDashboard = memo(({
       />
 
       <main className={styles.mainContent}>
+        <div
+          style={{
+            marginBottom: 20,
+            padding: "14px 18px",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid rgba(245, 158, 11, 0.18)",
+            background: "rgba(245, 158, 11, 0.08)",
+          }}
+        >
+          <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#fbbf24" }}>
+            Experimental security build
+          </p>
+          <p style={{ margin: "6px 0 0", fontSize: "12px", color: "var(--text-dim)", lineHeight: 1.6 }}>
+            This vault UI is still being hardened. Use encrypted backups, enable 2FA, and avoid treating the product as production-ready until the critical backlog is complete.
+          </p>
+        </div>
+
         {!userEmail && (
           <div style={{ 
             background: "rgba(239, 68, 68, 0.1)", 
@@ -235,7 +254,11 @@ export const VaultDashboard = memo(({
              onRefreshAccountStatus={onRefreshAccountStatus}
              setToast={setToast}
           />
-          <AdminActionPanel onImportVault={onImportVault} />
+          <AdminActionPanel
+            onImportVault={onImportVault}
+            onExportVault={onExportVault}
+            setToast={setToast}
+          />
         </section>
       </main>
     </div>

@@ -22,6 +22,7 @@ export default function DashboardPage() {
     deleteEntry, 
     updateEntry, 
     importData, 
+    exportBackup,
     createFolder, 
     deleteFolder, 
     moveEntry, 
@@ -116,6 +117,7 @@ export default function DashboardPage() {
         onMoveEntry={moveEntry}
         onEditEntry={updateEntry}
         onImportVault={importData}
+        onExportVault={exportBackup}
         onDownloadRecoveryKit={downloadRecoveryKit}
         onRefreshAccountStatus={update2FAStatus}
         isSyncing={isSyncing}
