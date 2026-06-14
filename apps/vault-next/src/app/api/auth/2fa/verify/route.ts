@@ -21,9 +21,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid 2FA token" }, { status: 400 });
     }
 
+    const { encryptServerSide } = await import("@/lib/serverCrypto");
     await prisma.user.update({
       where: { id: userId },
-      data: { twoFactorSecret: secret },
+      data: { twoFactorSecret: encryptServerSide(secret) },
     });
 
     return NextResponse.json({ success: true });
